@@ -1,0 +1,68 @@
+ <!DOCTYPE html>
+<html>
+<head>
+    <title>Animated Affirmations with Three.js</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="https://threejs.org/build/three.js"></script>
+    <script src="https://threejs.org/examples/js/loaders/FontLoader.js"></script>
+    <script src="https://threejs.org/examples/js/geometries/TextGeometry.js"></script>
+    <script>
+        let scene, camera, renderer, affirmations = [];
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            const loader = new THREE.FontLoader();
+
+            // Load a font
+            loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function (font) {
+                const affirmationTexts = [
+                    "I am confident and capable.",
+                    "I am growing and learning every day.",
+                    "I am grateful for my journey."
+                ];
+
+                const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+
+                affirmationTexts.forEach((text, index) => {
+                    const geometry = new THREE.TextGeometry(text, {
+                        font: font,
+                        size: 1,
+                        height: 0.1,
+                    });
+                    const mesh = new THREE.Mesh(geometry, material);
+                    mesh.position.set(Math.random() * 5 - 2.5, index * 2, 0);
+                    scene.add(mesh);
+                    affirmations.push(mesh);
+                });
+            });
+
+            camera.position.z = 5;
+            animate();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotate each affirmation
+            affirmations.forEach(mesh => {
+                mesh.rotation.x += 0.01;
+                mesh.rotation.y += 0.01;
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        init();
+    </script>
+</body>
+</html>
